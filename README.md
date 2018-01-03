@@ -1,6 +1,7 @@
 # firebase-files-downloader
-Download all files of given folder in Google firebase
+Download all files of given folder from firebase storage url.
+Download all files folder by folder with given firebase storage url.
 
 Technical information:
-+ Dev lang: C#
++ Dev language: C#
 + Libaries: FirebaseAuthentication, FirebaseStorage, Cefsharp
