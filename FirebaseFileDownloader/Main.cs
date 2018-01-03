@@ -34,8 +34,6 @@ namespace Main
         private String loginStatus = "";
         private String logoutUrl = "https://www.shopify.com/logout";
         private String loginUrl = "https://www.shopify.com/login";
-        private string keywordIOURL = "https://www.keyword.io/tool/google-longtail-finder?q=#&audience=en-us";
-        private String uploadUrl = "/admin/apps/teescape-fulfillment/active/shopify/uploader.asp";
         CefSettings settings = new CefSettings();
 
         public Main()
@@ -53,27 +51,15 @@ namespace Main
                 BrowserSettings b = new BrowserSettings();                
                 b.WebSecurity = CefState.Disabled;
 
-                //saveOrLoadShopConfigs(null);
-                string startUrl = "https://shopify.com";
-               /* if(this.shopConfig.ShopName != null && this.shopConfig.ShopName != "")
-                {
-                    startUrl = this.shopConfig.ShopName+"/admin";
-                    this.storeUrl = this.shopConfig.ShopName;
-                    this.step = "logging";
-                    this.username.Enabled = false;
-                    this.password.Enabled = false;
-                    this.logoutBtn.Enabled = false;
-                    this.buttonLogin.Enabled = false;
-                }*/
-                this.mainWebBrowser = new ChromiumWebBrowser(startUrl);
+                this.mainWebBrowser = new ChromiumWebBrowser("https://www.google.com/");
                 this.mainWebBrowser.JsDialogHandler = new JsHandler();
                 this.mainWebBrowser.BrowserSettings = b;
-
+                this.mainWebBrowser.DownloadHandler = new DownloadHandler();
                 this.mainWebBrowser.Dock = DockStyle.Fill;
                 this.mainWebBrowser.Visible = false;
                 //this.mainWebBrowser.FrameLoadEnd += mainWebBrowser_DocumentCompleteHandler;
                 this.mainWebBrowser.LoadingStateChanged += mainWebBrowser_LoadingHandler;
-                this.mainWebBrowser.AddressChanged += mainWebBrowser_AdressChangeHandler;                
+                //this.mainWebBrowser.AddressChanged += mainWebBrowser_AdressChangeHandler;                
                 //this.mainWebBrowser.ConsoleMessage += mainWebBrowser_ConsoleMessage;
                 this.stopBtn.Enabled = false;
             }
@@ -82,26 +68,7 @@ namespace Main
                 MessageBox.Show(ex.Message, "Unhandled UI Exception1");
             }
         }
-
-        private void mainWebBrowser_AdressChangeHandler(object sender, AddressChangedEventArgs e)
-        {
-            try
-            {
-                if (e.Address.Contains("/admin/auth/login"))
-                {
-                    System.Threading.Thread.Sleep(4000);
-                    string username = this.username.Text;
-                    string password = this.password.Text;
-                    this.mainWebBrowser.ExecuteScriptAsync("(function(username,password){var evt=document.createEvent('MouseEvents');evt.initEvent('input',true,true);var form=$('form');var email=form.find('[name=login][type=email]')[0];email.value=username;email.dispatchEvent(evt);var passwordDom=form.find('[name=password][type=password]')[0];passwordDom.value=password;passwordDom.dispatchEvent(evt);form.find('[name=button][type=submit]').click();setTimeout(function(){try{var iframes=$('iframe'); iframes[0].contentDocument.getElementsByClassName('recaptcha-checkbox-checkmark')[0].click();}catch(e){}},2500)})('" + username + "','" + password + "')");
-                    Console.WriteLine("vncud address change" + e.Address);
-                }
-            }
-            catch (Exception ex)
-            {
-                writeLog("mainWebBrowser_AdressChangeHandler - error is:"+ex.Message);
-            }
-        }
-
+        
         private void mainWebBrowser_ConsoleMessage(object sender, ConsoleMessageEventArgs e)
         {
             string consoleLog = "Current URL:" + mainWebBrowser.Address + "\n";
@@ -121,7 +88,6 @@ namespace Main
                     switch (this.step)
                     {
                         case "initApp":
-                            this.timer.Stop();
                             this.mainWebBrowser.Invoke((MethodInvoker)delegate
                             {
                                 writeLog("Step: initApp");
@@ -129,7 +95,6 @@ namespace Main
                             //this.InitTheSession();
                             break;
                         case "upload":
-                            this.timer.Stop();
                             //this.processUpload();
                             this.mainWebBrowser.Invoke((MethodInvoker)delegate
                             {
@@ -144,7 +109,7 @@ namespace Main
                 }
                 else if (this.loginStatus == "" && this.step == "processLogin")
                 {
-                    processLogin();
+                    //processLogin();
                 }
                 else if (this.loginStatus == "" && this.step == "logging" 
                     && e.Browser.MainFrame.Url != this.loginUrl && !e.Browser.MainFrame.Url.Contains("/login"))
@@ -152,10 +117,7 @@ namespace Main
                     this.mainWebBrowser.Invoke((MethodInvoker)delegate
                     {
                         this.step = "logged";
-                        this.username.Enabled = true;
-                        this.password.Enabled = true;
-                        this.logoutBtn.Enabled = true;
-                        this.buttonLogin.Enabled = true;
+                        this.folderTxt.Enabled = true;
                         string currentUrl = e.Browser.MainFrame.Url;
                         string mainUrl = ".myshopify.com";
                         //this.storeUrl = currentUrl.Substring(0, currentUrl.IndexOf(".myshopify.com"))+ mainUrl;
@@ -166,68 +128,7 @@ namespace Main
             }
         }
         
-
-        // process login
-        private void processLogin()
-        {
-            if (this.step == "processLogin")
-            {
-                this.step = "logging";
-                this.checkingLoginForm();
-            }
-        }
-        private async void checkingLoginForm()
-        {
-            try
-            {
-                //ShopifyLoginForm
-                await Task.Delay(1000);
-                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('#ShopifyLoginForm').length;if(rendered!=0){var subDoms=$('input[name=\"subdomain\"]');if(subDoms.length!=0){subDoms.val('');subDoms.trigger('change');}}return rendered;})()");
-                await domTask.ContinueWith(t =>
-                 {
-                     if (!t.IsFaulted)
-                     {
-                         var response = t.Result;
-                         if (response.Success && response.Result != null)
-                         {
-                             bool isDomExisted = Convert.ToInt32(response.Result.ToString()) != 0;
-                             if (isDomExisted)
-                             {
-                                 this.mainWebBrowser.Invoke((MethodInvoker)delegate
-                                 {
-                                     this.processingLogin();
-                                 });
-                             }
-                             else
-                             {
-                                 this.mainWebBrowser.Invoke((MethodInvoker)delegate
-                                 {
-                                     this.checkingLoginForm();
-                                 });
-
-                             }
-
-                         }
-                         else
-                         {
-                             writeLog(response.Message);
-                         }
-                     }
-                 });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("checkingLoginForm has error:" + ex.Message);
-            }
-        }
-        private void processingLogin()
-        {
-            string username = this.username.Text;
-            string password = this.password.Text;
-            this.mainWebBrowser.ExecuteScriptAsync("(function(username,password){var evt=document.createEvent('MouseEvents');evt.initEvent('input',true,true);var form=$('#ShopifyLoginForm');var email=form.find('[name=login][type=email]')[0];email.value=username;email.dispatchEvent(evt);var passwordDom=form.find('[name=password][type=password]')[0];passwordDom.value=password;passwordDom.dispatchEvent(evt);form.find('[name=button][type=submit]').click();})('" + username + "','" + password + "')");
-        }
-
-
+     
         private void writeLog(string message)
         {
             try
@@ -255,7 +156,49 @@ namespace Main
                 Console.WriteLine("writeLog method has error:" + ex.Message);
             }
         }
-        
+
+        private void LoadSetting()
+        {
+            try
+            {
+                String filePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\assets\\configs\\config.txt";
+                string configStr = File.ReadAllText(filePath);
+                AccountConfig config = Newtonsoft.Json.JsonConvert.DeserializeObject<AccountConfig>(configStr);
+                folderTxt.Text = config.FirebaseFolder;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Load config is fail:");
+            }
+        }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                this.splitContainer.Panel2.Controls.Add(this.mainWebBrowser);
+                this.splitContainer.Panel2.Enabled = true;
+                this.mainWebBrowser.Visible = true;
+                LoadSetting();
+                this.log.Text = " * **Ready***\n";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Unhandled UI Exception2");
+            }
+        }
+
+        private void settingBtn_Click(object sender, EventArgs e)
+        {
+            SettingPanel settingPal = new SettingPanel();
+            settingPal.ShowDialog();
+        }
+
+        private void startBtn_Click(object sender, EventArgs e)
+        {
+            this.mainWebBrowser.Load(folderTxt.Text);
+            writeLog("------Loading: " + folderTxt.Text);
+        }
     }
 
 }

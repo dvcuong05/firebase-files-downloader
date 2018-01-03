@@ -58,7 +58,7 @@ namespace Main.classes
 
             try
             {
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var auth = new FirebaseAuthProvider(new Firebase.Auth.FirebaseConfig(ApiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
 
 
@@ -104,7 +104,7 @@ namespace Main.classes
                 {
                     folderName = "assets";
                 }
-                var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+                var auth = new FirebaseAuthProvider(new Firebase.Auth.FirebaseConfig(ApiKey));
                 var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
 
                 // Get any Stream — it can be FileStream, MemoryStream or any other type of Stream
