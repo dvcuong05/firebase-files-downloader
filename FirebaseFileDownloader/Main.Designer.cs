@@ -47,17 +47,17 @@ namespace Main
             this.log = new System.Windows.Forms.RichTextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.GroupLogin = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.updateStyle = new System.Windows.Forms.Button();
             this.startBtn = new System.Windows.Forms.Button();
-            this.stopBtn = new System.Windows.Forms.Button();
-            this.settingBtn = new System.Windows.Forms.Button();
-            this.resetBtn = new System.Windows.Forms.Button();
-            this.GroupLogin = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.folderTxt = new System.Windows.Forms.TextBox();
-            this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.stopBtn = new System.Windows.Forms.Button();
+            this.label12 = new System.Windows.Forms.Label();
+            this.settingBtn = new System.Windows.Forms.Button();
+            this.folderTxt = new System.Windows.Forms.TextBox();
+            this.resetBtn = new System.Windows.Forms.Button();
+            this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -271,6 +271,37 @@ namespace Main
             this.panelTop.Size = new System.Drawing.Size(423, 109);
             this.panelTop.TabIndex = 13;
             // 
+            // GroupLogin
+            // 
+            this.GroupLogin.BackColor = System.Drawing.Color.Transparent;
+            this.GroupLogin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.GroupLogin.Controls.Add(this.label2);
+            this.GroupLogin.Controls.Add(this.updateStyle);
+            this.GroupLogin.Controls.Add(this.startBtn);
+            this.GroupLogin.Controls.Add(this.label1);
+            this.GroupLogin.Controls.Add(this.stopBtn);
+            this.GroupLogin.Controls.Add(this.label12);
+            this.GroupLogin.Controls.Add(this.settingBtn);
+            this.GroupLogin.Controls.Add(this.folderTxt);
+            this.GroupLogin.Controls.Add(this.resetBtn);
+            this.GroupLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.GroupLogin.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.GroupLogin.Location = new System.Drawing.Point(4, -1);
+            this.GroupLogin.Name = "GroupLogin";
+            this.GroupLogin.Size = new System.Drawing.Size(395, 92);
+            this.GroupLogin.TabIndex = 10;
+            this.GroupLogin.TabStop = false;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(28, 55);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(49, 15);
+            this.label2.TabIndex = 29;
+            this.label2.Text = "Actions:";
+            // 
             // updateStyle
             // 
             this.updateStyle.BackColor = System.Drawing.Color.White;
@@ -303,6 +334,16 @@ namespace Main
             this.startBtn.UseVisualStyleBackColor = false;
             this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(5, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(72, 15);
+            this.label1.TabIndex = 28;
+            this.label1.Text = "Storage Url:";
+            // 
             // stopBtn
             // 
             this.stopBtn.BackColor = System.Drawing.Color.White;
@@ -319,6 +360,18 @@ namespace Main
             this.stopBtn.Size = new System.Drawing.Size(52, 42);
             this.stopBtn.TabIndex = 3;
             this.stopBtn.UseVisualStyleBackColor = false;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.Red;
+            this.label12.Location = new System.Drawing.Point(73, 13);
+            this.label12.Margin = new System.Windows.Forms.Padding(0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(12, 13);
+            this.label12.TabIndex = 27;
+            this.label12.Text = "*";
             // 
             // settingBtn
             // 
@@ -338,6 +391,14 @@ namespace Main
             this.settingBtn.UseVisualStyleBackColor = false;
             this.settingBtn.Click += new System.EventHandler(this.settingBtn_Click);
             // 
+            // folderTxt
+            // 
+            this.folderTxt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.folderTxt.Location = new System.Drawing.Point(86, 14);
+            this.folderTxt.Name = "folderTxt";
+            this.folderTxt.Size = new System.Drawing.Size(305, 21);
+            this.folderTxt.TabIndex = 0;
+            // 
             // resetBtn
             // 
             this.resetBtn.BackColor = System.Drawing.Color.White;
@@ -355,70 +416,9 @@ namespace Main
             this.resetBtn.TabIndex = 1;
             this.resetBtn.UseVisualStyleBackColor = false;
             // 
-            // GroupLogin
-            // 
-            this.GroupLogin.BackColor = System.Drawing.Color.Transparent;
-            this.GroupLogin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.GroupLogin.Controls.Add(this.label2);
-            this.GroupLogin.Controls.Add(this.updateStyle);
-            this.GroupLogin.Controls.Add(this.startBtn);
-            this.GroupLogin.Controls.Add(this.label1);
-            this.GroupLogin.Controls.Add(this.stopBtn);
-            this.GroupLogin.Controls.Add(this.label12);
-            this.GroupLogin.Controls.Add(this.settingBtn);
-            this.GroupLogin.Controls.Add(this.folderTxt);
-            this.GroupLogin.Controls.Add(this.resetBtn);
-            this.GroupLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.GroupLogin.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.GroupLogin.Location = new System.Drawing.Point(4, -1);
-            this.GroupLogin.Name = "GroupLogin";
-            this.GroupLogin.Size = new System.Drawing.Size(395, 92);
-            this.GroupLogin.TabIndex = 10;
-            this.GroupLogin.TabStop = false;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.ForeColor = System.Drawing.Color.Red;
-            this.label12.Location = new System.Drawing.Point(73, 13);
-            this.label12.Margin = new System.Windows.Forms.Padding(0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(12, 13);
-            this.label12.TabIndex = 27;
-            this.label12.Text = "*";
-            // 
-            // folderTxt
-            // 
-            this.folderTxt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.folderTxt.Location = new System.Drawing.Point(86, 14);
-            this.folderTxt.Name = "folderTxt";
-            this.folderTxt.Size = new System.Drawing.Size(305, 21);
-            this.folderTxt.TabIndex = 0;
-            // 
             // folderBrowser
             // 
             this.folderBrowser.RootFolder = System.Environment.SpecialFolder.MyComputer;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(5, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 15);
-            this.label1.TabIndex = 28;
-            this.label1.Text = "Storage Url:";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(28, 55);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 15);
-            this.label2.TabIndex = 29;
-            this.label2.Text = "Actions:";
             // 
             // Main
             // 
@@ -428,7 +428,7 @@ namespace Main
             this.Controls.Add(this.splitContainer);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Teescape auto uploader";
+            this.Text = "Firebase file downloader";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Main_Load);
             this.splitContainer.Panel1.ResumeLayout(false);

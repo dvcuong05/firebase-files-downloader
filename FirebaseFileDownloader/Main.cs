@@ -31,9 +31,8 @@ namespace Main
     {
         private ChromiumWebBrowser mainWebBrowser;
         private String step;
-        private String loginStatus = "";
-        private String logoutUrl = "https://www.shopify.com/logout";
-        private String loginUrl = "https://www.shopify.com/login";
+        private List<object> folderList = new List<object>();
+        private int currentFolderIndex = -1;
         CefSettings settings = new CefSettings();
 
         public Main()
@@ -82,49 +81,22 @@ namespace Main
         private void mainWebBrowser_LoadingHandler(Object sender, LoadingStateChangedEventArgs e)
         {
             if (!e.IsLoading)
-            {
-                if (this.loginStatus == "logged")
+            {                
+                switch (this.step)
                 {
-                    switch (this.step)
-                    {
-                        case "initApp":
-                            this.mainWebBrowser.Invoke((MethodInvoker)delegate
-                            {
-                                writeLog("Step: initApp");
-                            });
-                            //this.InitTheSession();
-                            break;
-                        case "upload":
-                            //this.processUpload();
-                            this.mainWebBrowser.Invoke((MethodInvoker)delegate
-                            {
-                                //updateProcessBarValue(1);
-                                writeLog("Step: upload");
-                            });
-                            break;                        
-                        default:
-                            break;
-                    }
-
-                }
-                else if (this.loginStatus == "" && this.step == "processLogin")
-                {
-                    //processLogin();
-                }
-                else if (this.loginStatus == "" && this.step == "logging" 
-                    && e.Browser.MainFrame.Url != this.loginUrl && !e.Browser.MainFrame.Url.Contains("/login"))
-                {
-                    this.mainWebBrowser.Invoke((MethodInvoker)delegate
-                    {
-                        this.step = "logged";
-                        this.folderTxt.Enabled = true;
-                        string currentUrl = e.Browser.MainFrame.Url;
-                        string mainUrl = ".myshopify.com";
-                        //this.storeUrl = currentUrl.Substring(0, currentUrl.IndexOf(".myshopify.com"))+ mainUrl;
-                       // saveOrLoadShopConfigs(this.storeUrl);
-                        //updateLoginStatus();
-                    });
-                }
+                    case "checkingFolderLoaded":
+                        this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                        {
+                            writeLog("Step: load folder content");
+                        });
+                        this.checkingFolderLoaded();
+                        break;
+                    case "downloadFileForFolder":
+                        this.downloadFileForFolder(this.currentFolderIndex);
+                        break;                        
+                    default:
+                        break;
+                }                
             }
         }
         
@@ -168,7 +140,7 @@ namespace Main
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Load config is fail:");
+                MessageBox.Show("Something wrong, Please make sure that the firebase account is configured", "Warning");
             }
         }
 
@@ -197,7 +169,136 @@ namespace Main
         private void startBtn_Click(object sender, EventArgs e)
         {
             this.mainWebBrowser.Load(folderTxt.Text);
+            this.step = "checkingFolderLoaded";
             writeLog("------Loading: " + folderTxt.Text);
+        }
+
+        private async void checkingFolderLoaded()
+        {
+            if(this.step != "checkingFolderLoaded")
+            {
+                return;
+            }
+
+            try
+            {
+                await Task.Delay(5000);
+                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('.fb-table-elem').length;if(rendered!=0){var total=$('.fb-table-has-icon').length;var result=[];for(var i=0;i<total;i++){result.push($('.fb-table-has-icon')[i].href);}return result;}return 404;})()");
+                await domTask.ContinueWith(t =>
+                {
+                    if (!t.IsFaulted)
+                    {
+                        var response = t.Result;
+                        if (response.Success && response.Result != null)
+                        {
+                            string responseNum = response.Result.ToString();
+                            if (response.Result.ToString() != "404")
+                            {
+                                this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                                {
+                                    if (this.step == "downloadFileForFolder")
+                                    {
+                                        return;
+                                    }
+                                    this.folderList = (List<object>)response.Result;
+                                    this.step = "downloadFileForFolder";
+                                    this.currentFolderIndex = 0;
+                                    accessFolderItem(this.currentFolderIndex);
+
+                                    //this.mainWebBrowser.EvaluateScriptAsync("(function(index){$('.fb-table-has-icon')[index].click();})(" + this.currentFolderIndex + ");");
+                                   // System.Threading.Thread.Sleep(2000);
+                                    //downloadFileForFolder(this.currentFolderIndex);
+                                });
+                            }
+                            else
+                            {
+                                if (this.step == "checkingFolderLoaded")
+                                {
+                                    return;
+                                }
+                                this.step = "checkingFolderLoaded";
+                                checkingFolderLoaded();
+                            }
+                        }
+                        else
+                        {
+                            writeLog(response.Message);
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                writeLog("checkingFolderLoaded has error:" + ex.Message);
+            }
+        }
+
+        private void accessFolderItem(int index)
+        {
+            this.mainWebBrowser.Load(this.folderList[index].ToString());
+            this.step = "downloadFileForFolder";
+            writeLog("------Loading:");
+            writeLog(this.folderList[this.currentFolderIndex].ToString());
+
+        }
+
+        private async void downloadFileForFolder(int index)
+        {
+            if (this.step != "downloadFileForFolder")
+            {
+                return;
+            }
+
+            try
+            {
+                await Task.Delay(5000);
+                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('.fb-table-elem').length;if(rendered!=0){$('md-checkbox[aria-label=\"Select all items\"]').click();setTimeout(function(){$('button[multi-download]').click();},2000)return 200;}return 404;})()");
+                await domTask.ContinueWith(t =>
+                {
+                    if (!t.IsFaulted)
+                    {
+                        var response = t.Result;
+                        if (response.Success && response.Result != null)
+                        {
+                            int responseNum = Convert.ToInt32(response.Result.ToString());
+                            if (responseNum != 404)
+                            {
+                                this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                                {
+                                    if (this.step == "downloadFolderItem")
+                                    {
+                                        return;
+                                    }
+                                    this.currentFolderIndex = this.currentFolderIndex + 1;
+                                    if(this.currentFolderIndex <= this.folderList.Count)
+                                    {
+                                        writeLog("All done");
+                                        return;
+                                    }
+                                    this.accessFolderItem(this.currentFolderIndex);
+                                });
+                            }
+                            else
+                            {
+                                if (this.step == "downloadFileForFolder")
+                                {
+                                    return;
+                                }
+                                this.step = "downloadFileForFolder";
+                                downloadFileForFolder(index);
+                            }
+                        }
+                        else
+                        {
+                            writeLog(response.Message);
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                writeLog("checkingFolderLoaded has error:" + ex.Message);
+            }
         }
     }
 
