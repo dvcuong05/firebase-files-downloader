@@ -33,6 +33,10 @@ namespace Main
         private String step;
         private List<object> folderList = new List<object>();
         private int currentFolderIndex = -1;
+        private int totalFilesOfCurrent = 0;
+        private string currentCSSClassName = "";
+        private bool isDownloadFileStep = false;
+
         CefSettings settings = new CefSettings();
 
         public Main()
@@ -89,10 +93,14 @@ namespace Main
                         {
                             writeLog("Step: load folder content");
                         });
-                        this.checkingFolderLoaded();
+                        this.step = "checkingDOMLoadedAndScroll";
+                        this.currentCSSClassName = "c5e-modulehost-scrollcontainer";
+                        this.checkingDOMLoadedAndScroll(currentCSSClassName);
                         break;
-                    case "downloadFileForFolder":
-                        this.downloadFileForFolder(this.currentFolderIndex);
+                    case "accessFolderItem":
+                        this.step = "checkingDOMLoadedAndScroll";
+                        this.currentCSSClassName = "c5e-modulehost-content";
+                        this.checkingDOMLoadedAndScroll(currentCSSClassName);
                         break;                        
                     default:
                         break;
@@ -173,9 +181,120 @@ namespace Main
             writeLog("------Loading: " + folderTxt.Text);
         }
 
-        private async void checkingFolderLoaded()
+        private async void checkingDOMLoadedAndScroll(string className)
         {
-            if(this.step != "checkingFolderLoaded")
+            if (this.step != "checkingDOMLoadedAndScroll")
+            {
+                return;
+            }
+
+            try
+            {
+                await Task.Delay(3000);
+                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('.fb-table-elem').length;if(rendered!=0){$('."+className+ "').scrollTop($('." + className + "')[0].scrollHeight);return 200;}return 400;})()");
+                await domTask.ContinueWith(t =>
+                {
+                    if (!t.IsFaulted)
+                    {
+                        var response = t.Result;
+                        if (response.Success && response.Result != null)
+                        {
+                            string responseNum = response.Result.ToString();
+                            if (responseNum == "200")
+                            {
+                                this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                                {
+                                    if (this.step == "checkingScrollAtTheEnd")
+                                    {
+                                        return;
+                                    }
+                                    this.step = "checkingScrollAtTheEnd";
+                                    checkingScrollAtTheEnd(this.currentCSSClassName);
+                                });
+                            }
+                            else
+                            {
+                                checkingDOMLoadedAndScroll(this.currentCSSClassName);
+                            }
+                        }
+                        else
+                        {
+                            writeLog(response.Message);
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                writeLog("checkingDOMLoadedAndScroll has error:" + ex.Message);
+            }
+        }
+
+        private async void checkingScrollAtTheEnd(string className)
+        {
+            if (this.step != "checkingScrollAtTheEnd")
+            {
+                return;
+            }
+
+            try
+            {
+                await Task.Delay(3000);
+                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var elem=$('." + className + "');if(elem[0].scrollHeight-elem.scrollTop()==elem.outerHeight()){return 200;}else{$('." + className + "').scrollTop($('." + className+"')[0].scrollHeight);return 404;}return 400;})();");
+                await domTask.ContinueWith(t =>
+                {
+                    if (!t.IsFaulted)
+                    {
+                        var response = t.Result;
+                        if (response.Success && response.Result != null)
+                        {
+                            string responseNum = response.Result.ToString();
+                            if (responseNum == "200")
+                            {
+                                this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                                {                                    
+                                    if (!this.isDownloadFileStep)
+                                    {
+                                        if (this.step == "getListOfFolderLinks")
+                                        {
+                                            return;
+                                        }
+                                        this.step = "getListOfFolderLinks";
+                                        getListOfFolderLinks();
+                                    }
+                                    else
+                                    {
+                                        if (this.step == "downloadingFileForFolder")
+                                        {
+                                            return;
+                                        }
+                                        this.step = "downloadingFileForFolder";
+                                        downloadFileForFolder();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                this.step = "checkingDOMLoadedAndScroll";
+                                checkingDOMLoadedAndScroll(className);
+                            }
+                        }
+                        else
+                        {
+                            writeLog(response.Message);
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                writeLog("checkingScrollAtTheEnd has error:" + ex.Message);
+            }
+        }
+
+        private async void getListOfFolderLinks()
+        {
+            if(this.step != "getListOfFolderLinks")
             {
                 return;
             }
@@ -196,28 +315,19 @@ namespace Main
                             {
                                 this.mainWebBrowser.Invoke((MethodInvoker)delegate
                                 {
-                                    if (this.step == "downloadFileForFolder")
+                                    if (this.step == "accessFolderItem")
                                     {
                                         return;
                                     }
                                     this.folderList = (List<object>)response.Result;
-                                    this.step = "downloadFileForFolder";
+                                    this.step = "accessFolderItem";
                                     this.currentFolderIndex = 0;
-                                    accessFolderItem(this.currentFolderIndex);
-
-                                    //this.mainWebBrowser.EvaluateScriptAsync("(function(index){$('.fb-table-has-icon')[index].click();})(" + this.currentFolderIndex + ");");
-                                   // System.Threading.Thread.Sleep(2000);
-                                    //downloadFileForFolder(this.currentFolderIndex);
+                                    accessFolderItem();
                                 });
                             }
                             else
                             {
-                                if (this.step == "checkingFolderLoaded")
-                                {
-                                    return;
-                                }
-                                this.step = "checkingFolderLoaded";
-                                checkingFolderLoaded();
+                                getListOfFolderLinks();
                             }
                         }
                         else
@@ -229,30 +339,39 @@ namespace Main
             }
             catch (Exception ex)
             {
-                writeLog("checkingFolderLoaded has error:" + ex.Message);
+                writeLog("getListOfFolderLinks has error:" + ex.Message);
             }
         }
 
-        private void accessFolderItem(int index)
+        private void accessFolderItem()
         {
-            this.mainWebBrowser.Load(this.folderList[index].ToString());
-            this.step = "downloadFileForFolder";
-            writeLog("------Loading:");
+            this.mainWebBrowser.Load(this.folderList[this.currentFolderIndex].ToString());
+            this.step = "accessFolderItem";
+            this.isDownloadFileStep = true;
+            writeLog("------Step - accessFolderItem:");
             writeLog(this.folderList[this.currentFolderIndex].ToString());
 
         }
 
-        private async void downloadFileForFolder(int index)
+        private async void downloadFileForFolder()
         {
-            if (this.step != "downloadFileForFolder")
+            if (this.step != "downloadingFileForFolder")
             {
                 return;
             }
 
             try
             {
-                await Task.Delay(5000);
-                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('.fb-table-elem').length;if(rendered!=0){$('md-checkbox[aria-label=\"Select all items\"]').click();setTimeout(function(){$('button[multi-download]').click();},2000)return 200;}return 404;})()");
+                await Task.Delay(5000);                
+                //Calculate folder name
+                string folderName = HttpUtility.UrlDecode(this.folderList[this.currentFolderIndex].ToString());
+                folderName = folderName.Substring(folderName.LastIndexOf(this.folderTxt.Text) + this.folderTxt.Text.Length);
+                folderName = folderName.Replace("\\","").Replace("/", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+                TeescapeInstance.CurrentFolderPath = this.outputFolderTxt.Text+"\\"+ folderName;
+                System.IO.Directory.CreateDirectory(TeescapeInstance.CurrentFolderPath);
+
+                //Start to download with current folderPath from Instance
+                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('.fb-table-elem').length;if(rendered!=0){setTimeout(function(){if(!$('md-checkbox[aria-label=\"Select all items\"]').hasClass('md-checked')){$('md-checkbox[aria-label=\"Select all items\"]').click();}$('button[multi-download]').click();},1000);return $('.uploaded-files').length;}return 404;})()");
                 await domTask.ContinueWith(t =>
                 {
                     if (!t.IsFaulted)
@@ -265,27 +384,18 @@ namespace Main
                             {
                                 this.mainWebBrowser.Invoke((MethodInvoker)delegate
                                 {
-                                    if (this.step == "downloadFolderItem")
+                                    if (this.step == "checkTotalDownloadedFiles")
                                     {
                                         return;
                                     }
-                                    this.currentFolderIndex = this.currentFolderIndex + 1;
-                                    if(this.currentFolderIndex <= this.folderList.Count)
-                                    {
-                                        writeLog("All done");
-                                        return;
-                                    }
-                                    this.accessFolderItem(this.currentFolderIndex);
+                                    this.step = "checkTotalDownloadedFiles";
+                                    this.totalFilesOfCurrent = responseNum;
+                                    checkTotalDownloadedFiles();
                                 });
                             }
                             else
                             {
-                                if (this.step == "downloadFileForFolder")
-                                {
-                                    return;
-                                }
-                                this.step = "downloadFileForFolder";
-                                downloadFileForFolder(index);
+                                downloadFileForFolder();
                             }
                         }
                         else
@@ -297,7 +407,33 @@ namespace Main
             }
             catch (Exception ex)
             {
-                writeLog("checkingFolderLoaded has error:" + ex.Message);
+                writeLog("downloadFileForFolder has error:" + ex.Message);
+            }
+        }
+
+        private void checkTotalDownloadedFiles()
+        {
+            if(this.step != "checkTotalDownloadedFiles")
+            {
+                return;
+            }
+
+            string[] fileEntries = Directory.GetFiles(TeescapeInstance.CurrentFolderPath);
+            if(fileEntries.Length != this.totalFilesOfCurrent)
+            {
+                System.Threading.Thread.Sleep(5000);
+                checkTotalDownloadedFiles();
+            }
+            else
+            {
+                //Download next folder
+                this.currentFolderIndex = this.currentFolderIndex + 1;
+                if (this.currentFolderIndex >= this.folderList.Count)
+                {
+                    writeLog("****All done");
+                    return;
+                }
+                this.accessFolderItem();
             }
         }
     }

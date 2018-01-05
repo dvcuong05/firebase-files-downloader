@@ -58,6 +58,8 @@ namespace Main
             this.folderTxt = new System.Windows.Forms.TextBox();
             this.resetBtn = new System.Windows.Forms.Button();
             this.folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
+            this.label3 = new System.Windows.Forms.Label();
+            this.outputFolderTxt = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -98,9 +100,9 @@ namespace Main
             this.listItemFlow.BackColor = System.Drawing.Color.DimGray;
             this.listItemFlow.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.listItemFlow.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listItemFlow.Location = new System.Drawing.Point(0, 109);
+            this.listItemFlow.Location = new System.Drawing.Point(0, 197);
             this.listItemFlow.Name = "listItemFlow";
-            this.listItemFlow.Size = new System.Drawing.Size(423, 502);
+            this.listItemFlow.Size = new System.Drawing.Size(423, 414);
             this.listItemFlow.TabIndex = 0;
             // 
             // panel3
@@ -268,13 +270,15 @@ namespace Main
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(423, 109);
+            this.panelTop.Size = new System.Drawing.Size(423, 197);
             this.panelTop.TabIndex = 13;
             // 
             // GroupLogin
             // 
             this.GroupLogin.BackColor = System.Drawing.Color.Transparent;
             this.GroupLogin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.GroupLogin.Controls.Add(this.label3);
+            this.GroupLogin.Controls.Add(this.outputFolderTxt);
             this.GroupLogin.Controls.Add(this.label2);
             this.GroupLogin.Controls.Add(this.updateStyle);
             this.GroupLogin.Controls.Add(this.startBtn);
@@ -288,7 +292,7 @@ namespace Main
             this.GroupLogin.ForeColor = System.Drawing.SystemColors.ControlText;
             this.GroupLogin.Location = new System.Drawing.Point(4, -1);
             this.GroupLogin.Name = "GroupLogin";
-            this.GroupLogin.Size = new System.Drawing.Size(395, 92);
+            this.GroupLogin.Size = new System.Drawing.Size(416, 143);
             this.GroupLogin.TabIndex = 10;
             this.GroupLogin.TabStop = false;
             // 
@@ -296,7 +300,7 @@ namespace Main
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(28, 55);
+            this.label2.Location = new System.Drawing.Point(28, 90);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(49, 15);
             this.label2.TabIndex = 29;
@@ -309,7 +313,7 @@ namespace Main
             this.updateStyle.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
             this.updateStyle.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.updateStyle.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.updateStyle.Location = new System.Drawing.Point(322, 41);
+            this.updateStyle.Location = new System.Drawing.Point(322, 76);
             this.updateStyle.Name = "updateStyle";
             this.updateStyle.Size = new System.Drawing.Size(52, 43);
             this.updateStyle.TabIndex = 19;
@@ -327,7 +331,7 @@ namespace Main
             this.startBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.startBtn.Image = ((System.Drawing.Image)(resources.GetObject("startBtn.Image")));
-            this.startBtn.Location = new System.Drawing.Point(86, 42);
+            this.startBtn.Location = new System.Drawing.Point(86, 77);
             this.startBtn.Name = "startBtn";
             this.startBtn.Size = new System.Drawing.Size(52, 42);
             this.startBtn.TabIndex = 0;
@@ -355,7 +359,7 @@ namespace Main
             this.stopBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stopBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.stopBtn.Image = ((System.Drawing.Image)(resources.GetObject("stopBtn.Image")));
-            this.stopBtn.Location = new System.Drawing.Point(263, 42);
+            this.stopBtn.Location = new System.Drawing.Point(263, 77);
             this.stopBtn.Name = "stopBtn";
             this.stopBtn.Size = new System.Drawing.Size(52, 42);
             this.stopBtn.TabIndex = 3;
@@ -384,7 +388,7 @@ namespace Main
             this.settingBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settingBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.settingBtn.Image = ((System.Drawing.Image)(resources.GetObject("settingBtn.Image")));
-            this.settingBtn.Location = new System.Drawing.Point(204, 42);
+            this.settingBtn.Location = new System.Drawing.Point(204, 77);
             this.settingBtn.Name = "settingBtn";
             this.settingBtn.Size = new System.Drawing.Size(52, 42);
             this.settingBtn.TabIndex = 2;
@@ -410,7 +414,7 @@ namespace Main
             this.resetBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.resetBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.resetBtn.Image = ((System.Drawing.Image)(resources.GetObject("resetBtn.Image")));
-            this.resetBtn.Location = new System.Drawing.Point(145, 42);
+            this.resetBtn.Location = new System.Drawing.Point(145, 77);
             this.resetBtn.Name = "resetBtn";
             this.resetBtn.Size = new System.Drawing.Size(52, 42);
             this.resetBtn.TabIndex = 1;
@@ -419,6 +423,24 @@ namespace Main
             // folderBrowser
             // 
             this.folderBrowser.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(5, 41);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(75, 15);
+            this.label3.TabIndex = 31;
+            this.label3.Text = "Main output:";
+            // 
+            // outputFolderTxt
+            // 
+            this.outputFolderTxt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.outputFolderTxt.Location = new System.Drawing.Point(86, 41);
+            this.outputFolderTxt.Name = "outputFolderTxt";
+            this.outputFolderTxt.Size = new System.Drawing.Size(305, 21);
+            this.outputFolderTxt.TabIndex = 30;
             // 
             // Main
             // 
@@ -475,6 +497,8 @@ namespace Main
         private Button copyLogBtn;
         private Label label1;
         private Label label2;
+        private Label label3;
+        private TextBox outputFolderTxt;
     }
 }
 

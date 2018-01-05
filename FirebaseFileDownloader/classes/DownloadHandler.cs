@@ -19,7 +19,7 @@ namespace Main.classes
         public void OnBeforeDownload(IBrowser browser, DownloadItem downloadItem, IBeforeDownloadCallback callback)
         {
             var handler = OnBeforeDownloadFired;
-            String filePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\assets\\images";
+            
             if (handler != null)
             {
                 handler(this, downloadItem);
@@ -29,7 +29,12 @@ namespace Main.classes
             {
                 using (callback)
                 {
-                    callback.Continue(filePath +"\\"+downloadItem.SuggestedFileName, showDialog: false);
+                    string filePath = TeescapeInstance.CurrentFolderPath + "\\" + downloadItem.SuggestedFileName;
+                    if (File.Exists(filePath))
+                    {
+                        return;
+                    }
+                    callback.Continue(filePath, showDialog: false);
                 }
             }
         }
@@ -42,5 +47,6 @@ namespace Main.classes
                 handler(this, downloadItem);
             }
         }
+      
     }
 }

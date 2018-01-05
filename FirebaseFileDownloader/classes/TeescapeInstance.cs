@@ -13,64 +13,21 @@ namespace Main
 {
     public class TeescapeInstance
     {
-        private static string folderPath;
-        public static string category;
-        public static string mainKeyword;
-        public static String[] replacementKeywords;
-        public static String[] parentReplacementKeywords;
-        public static String parentDescription;
-        public static Hashtable ioKeywordInstances = new Hashtable();
+        private static string currentFolderPath;
 
-        public static string FolderPath
+        public static string CurrentFolderPath
         {
             get
             {
-                return folderPath;
+                return currentFolderPath;
             }
 
             set
             {
-                folderPath = value;
+                currentFolderPath = value;
             }
         }
-
-        public static Hashtable IoKeywordInstances {
-            get
-            {
-                return ioKeywordInstances;
-            }
-
-            set
-            {
-                ioKeywordInstances = value;
-            }
-        }
-
-        public static string MainKeyword
-        {
-            get
-            {
-                return mainKeyword;
-            }
-
-            set
-            {
-                mainKeyword = value;
-            }
-        }
-
-        public static string[] ReplacementKeywords
-        {
-            get
-            {
-                return replacementKeywords;
-            }
-
-            set
-            {
-                replacementKeywords = value;
-            }
-        }
+        
 
         public static T Clone<T>(T source)
         {
@@ -172,51 +129,7 @@ namespace Main
             return fixedName + time;
         }
 
-        public static string getFixedNameForSingle(string originalName)
-        {
-            int maxLength = 70;
-            string fixedName = "";
-            string[] arr = originalName.Split(' ');
-            for (int i = 0; i < arr.Count(); i++)
-            {
-                string tmp = arr[i] + " ";
-                if ((fixedName.Length + tmp.Length) <= maxLength)
-                {
-                    fixedName += tmp;
-                }
-            }
-            return fixedName;
-        }
-
-        public static void saveProductIds(List<string> productIds)
-        {
-            try
-            {
-
-                String filePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/assets/configs/productids.txt";
-                String productIdsString = JsonConvert.SerializeObject(productIds);
-                File.WriteAllText(filePath, productIdsString);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("VNCUD saveProductIds has error:" + ex.Message);
-            }
-        }
-
-        public static List<string> readProductIds()
-        {
-            try
-            {
-
-                String filePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "/assets/configs/productids.txt";
-                String fileContent = File.ReadAllText(filePath);
-                return JsonConvert.DeserializeObject<List<string>>(fileContent);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("VNCUD saveProductIds has error:" + ex.Message);
-                return new List<string>();
-            }
-        }
+       
+       
     }
 }
