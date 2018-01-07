@@ -30,11 +30,15 @@ namespace Main.classes
                 using (callback)
                 {
                     string filePath = TeescapeInstance.CurrentFolderPath + "\\" + downloadItem.SuggestedFileName;
-                    if (File.Exists(filePath))
+                    if (!File.Exists(filePath))
                     {
-                        return;
+                        callback.Continue(filePath, showDialog: false);
+                    }else
+                    {
+                        TeescapeInstance.TotalDownloadingFile = TeescapeInstance.TotalDownloadingFile - 1;
+                        callback.Dispose();
                     }
-                    callback.Continue(filePath, showDialog: false);
+                    
                 }
             }
         }
@@ -45,6 +49,11 @@ namespace Main.classes
             if (handler != null)
             {
                 handler(this, downloadItem);
+            }
+            if (downloadItem.IsComplete || downloadItem.IsCancelled)
+            {
+                TeescapeInstance.TotalDownloadingFile = TeescapeInstance.TotalDownloadingFile - 1;
+                callback.Dispose();
             }
         }
       

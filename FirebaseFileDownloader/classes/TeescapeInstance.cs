@@ -14,7 +14,21 @@ namespace Main
     public class TeescapeInstance
     {
         private static string currentFolderPath;
+		private static int totalDownloadingFile;
+		
+		public static int TotalDownloadingFile
+        {
+            get
+            {
+                return totalDownloadingFile;
+            }
 
+            set
+            {
+                totalDownloadingFile = value;
+            }
+        }
+		
         public static string CurrentFolderPath
         {
             get

@@ -40,6 +40,8 @@
             this.saveBtn = new System.Windows.Forms.Button();
             this.folderTxt = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.outputFolderTxt = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -135,17 +137,35 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(51, 126);
+            this.label5.Location = new System.Drawing.Point(12, 126);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(36, 13);
+            this.label5.Size = new System.Drawing.Size(79, 13);
             this.label5.TabIndex = 9;
-            this.label5.Text = "folder:";
+            this.label5.Text = "Firebase folder:";
+            // 
+            // outputFolderTxt
+            // 
+            this.outputFolderTxt.Location = new System.Drawing.Point(93, 149);
+            this.outputFolderTxt.Name = "outputFolderTxt";
+            this.outputFolderTxt.Size = new System.Drawing.Size(350, 20);
+            this.outputFolderTxt.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(16, 152);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(71, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Output folder:";
             // 
             // SettingPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(446, 147);
+            this.ClientSize = new System.Drawing.Size(466, 192);
+            this.Controls.Add(this.outputFolderTxt);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.folderTxt);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.saveBtn);
@@ -178,5 +198,7 @@
         private System.Windows.Forms.Button saveBtn;
         private System.Windows.Forms.TextBox folderTxt;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox outputFolderTxt;
+        private System.Windows.Forms.Label label6;
     }
 }

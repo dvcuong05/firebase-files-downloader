@@ -25,7 +25,7 @@ namespace Main
         private void saveBtn_Click(object sender, EventArgs e)
         {
             String filePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\assets\\configs\\config.txt";
-            AccountConfig firebaseCfg = new AccountConfig(apiKeyTxt.Text,bucketTxt.Text,emailTxt.Text,passwordTxt.Text,folderTxt.Text);
+            AccountConfig firebaseCfg = new AccountConfig(apiKeyTxt.Text,bucketTxt.Text,emailTxt.Text,passwordTxt.Text,folderTxt.Text,this.outputFolderTxt.Text);
             configStr = Newtonsoft.Json.JsonConvert.SerializeObject(firebaseCfg);
             File.WriteAllText(filePath, configStr);
             MessageBox.Show("Save config is successfully!!");

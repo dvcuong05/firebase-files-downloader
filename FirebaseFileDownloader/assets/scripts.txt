@@ -1,0 +1,11 @@
+//Download by batch
+(function(startNum,endNum) {
+$('button[ng-click="controller.deselectAllFiles()"]').click();
+for (var i = startNum; i <= endNum; i++) {
+	try{
+		$('md-checkbox[ng-click="controller.selectFile($event)"]')[i].click();
+	}catch(e){console.error("Cannot click on undefined:"+e);}
+}
+$('button[multi-download]').click();
+return $('.uploaded-files').length;
+})(startNum,endNum)

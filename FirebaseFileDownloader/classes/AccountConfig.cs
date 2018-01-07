@@ -13,14 +13,16 @@ namespace Main.classes
         private string authEmail;
         private string authPassword;
         private string firebaseFolder;
+        private string outputFolder;
 
-        public AccountConfig(string api,string buc,string mail,string pass, string folder)
+        public AccountConfig(string api,string buc,string mail,string pass, string folder,string output)
         {
             this.apiKey = api;
             this.bucket = buc;
             this.authEmail = mail;
             this.authPassword = pass;
             this.firebaseFolder = folder;
+            this.outputFolder = output;
         }
 
         public string ApiKey
@@ -85,6 +87,19 @@ namespace Main.classes
             set
             {
                 firebaseFolder = value;
+            }
+        }
+
+        public string OutputFolder
+        {
+            get
+            {
+                return outputFolder;
+            }
+
+            set
+            {
+                outputFolder = value;
             }
         }
     }

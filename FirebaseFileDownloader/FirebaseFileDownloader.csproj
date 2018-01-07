@@ -120,6 +120,12 @@
     <Compile Include="classes\JsHandler.cs" />
     <Compile Include="classes\Prompt.cs" />
     <Compile Include="classes\TeescapeInstance.cs" />
+    <Compile Include="FolderItemPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FolderItemPanel.Designer.cs">
+      <DependentUpon>FolderItemPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +140,9 @@
     <Compile Include="SettingPanel.Designer.cs">
       <DependentUpon>SettingPanel.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FolderItemPanel.resx">
+      <DependentUpon>FolderItemPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
