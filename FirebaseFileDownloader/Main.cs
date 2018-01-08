@@ -367,6 +367,8 @@ namespace Main
             writeLog("------Step - accessFolderItem:");
             writeLog(this.folderList[this.currentFolderIndex].ToString());
 
+            this.currentFolderPanel = (FolderItemPanel)this.listItemFlow.Controls[this.currentFolderIndex];
+            this.currentFolderPanel.updateBackground(Color.White);
         }
 
 
@@ -428,9 +430,7 @@ namespace Main
                                     }
                                     TeescapeInstance.TotalDownloadingFile = ((this.endNum + 1) - this.startNum);
                                     this.currentTotalFolderLabel.Text = (this.currentFolderIndex + 1).ToString();
-                                    this.currentFolderPanel = (FolderItemPanel)this.listItemFlow.Controls[this.currentFolderIndex];
                                     this.listItemFlow.ScrollControlIntoView(this.currentFolderPanel);
-                                    this.currentFolderPanel.updateBackground(Color.White);
                                     this.currentFolderPanel.updateTotals(responseNum, 0);
                                     downloadFileForFolder();
                                 });
