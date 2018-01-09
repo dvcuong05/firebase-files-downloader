@@ -27,6 +27,11 @@ namespace Main
             this.currentTotalLabel.Text = currentTotalFiles.ToString();
         }
 
+        public void changeProgressbarState(bool isShow)
+        {
+            this.progressBar1.Visible = isShow;
+        }
+
         public void updateBackground(Color color)
         {
             this.BackColor = color;

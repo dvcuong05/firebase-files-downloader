@@ -34,6 +34,7 @@
             this.folderNameTxt = new System.Windows.Forms.RichTextBox();
             this.totalFileLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // currentTotalLabel
@@ -90,19 +91,31 @@
             this.label2.TabIndex = 5;
             this.label2.Text = "------";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.ForeColor = System.Drawing.Color.MediumSpringGreen;
+            this.progressBar1.Location = new System.Drawing.Point(0, 75);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(407, 12);
+            this.progressBar1.Step = 30;
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar1.TabIndex = 6;
+            this.progressBar1.Visible = false;
+            // 
             // FolderItemPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.currentTotalLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.totalFileLabel);
             this.Controls.Add(this.folderNameTxt);
             this.Controls.Add(this.panel1);
             this.Name = "FolderItemPanel";
-            this.Size = new System.Drawing.Size(403, 74);
+            this.Size = new System.Drawing.Size(403, 88);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -114,5 +127,6 @@
         private System.Windows.Forms.RichTextBox folderNameTxt;
         private System.Windows.Forms.Label totalFileLabel;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }

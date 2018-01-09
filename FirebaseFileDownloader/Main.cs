@@ -369,6 +369,8 @@ namespace Main
 
             this.currentFolderPanel = (FolderItemPanel)this.listItemFlow.Controls[this.currentFolderIndex];
             this.currentFolderPanel.updateBackground(Color.White);
+            this.currentFolderPanel.changeProgressbarState(true);
+            this.listItemFlow.ScrollControlIntoView(this.currentFolderPanel);
         }
 
 
@@ -429,8 +431,7 @@ namespace Main
                                         this.endNum = this.totalFilesOfCurrent - 1;
                                     }
                                     TeescapeInstance.TotalDownloadingFile = ((this.endNum + 1) - this.startNum);
-                                    this.currentTotalFolderLabel.Text = (this.currentFolderIndex + 1).ToString();
-                                    this.listItemFlow.ScrollControlIntoView(this.currentFolderPanel);
+                                    this.currentTotalFolderLabel.Text = (this.currentFolderIndex + 1).ToString();                                    
                                     this.currentFolderPanel.updateTotals(responseNum, 0);
                                     downloadFileForFolder();
                                 });
@@ -512,9 +513,10 @@ namespace Main
                 System.Threading.Thread.Sleep(5000);
                 checkTotalDownloadedFiles();
             }
-            else if(fileEntries.Length == this.totalFilesOfCurrent)
+            else if(fileEntries.Length >= this.totalFilesOfCurrent)
             {
                 this.currentFolderPanel.updateTotals(this.totalFilesOfCurrent, fileEntries.Length);
+                this.currentFolderPanel.changeProgressbarState(false);
                 this.currentFolderPanel.updateBackground(Color.Silver);
                 //Download next folder
                 this.currentFolderIndex = this.currentFolderIndex + 1;
