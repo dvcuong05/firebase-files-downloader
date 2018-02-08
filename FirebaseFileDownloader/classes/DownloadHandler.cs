@@ -32,14 +32,26 @@ namespace Main.classes
                     string filePath = TeescapeInstance.CurrentFolderPath + "\\" + downloadItem.SuggestedFileName;
                     if (!File.Exists(filePath))
                     {
+                        if(filePath.Length > 255)
+                        {
+                            filePath = TeescapeInstance.CurrentFolderPath + "\\vncud_long_" + DateTime.Now + ".png";
+                        }
                         callback.Continue(filePath, showDialog: false);
                     }else
                     {
                         TeescapeInstance.TotalDownloadingFile = TeescapeInstance.TotalDownloadingFile - 1;
-                        callback.Dispose();
+                        //downloadItem.IsCancelled = true;
+                        //downloadItem.IsComplete = true;
+                        //downloadItem.IsValid = false;
+
+                        ///callback.Dispose();
                     }
                     
                 }
+            }
+            else
+            {
+                TeescapeInstance.TotalDownloadingFile = TeescapeInstance.TotalDownloadingFile - 1;
             }
         }
 

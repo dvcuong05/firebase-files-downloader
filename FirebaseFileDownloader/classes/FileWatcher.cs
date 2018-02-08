@@ -90,6 +90,33 @@ namespace Main.classes
             string newFilePath = folderName + Path.DirectorySeparatorChar + fileNameOnly + "_bk" + fileExtension;
             string newFilePath2 = folderName + Path.DirectorySeparatorChar + fileNameOnly + "_bk" + fileExtension;
         }*/
+
+        public static async void deleteFolder(string folderPath)
+        {
+           
+            try
+            {
+               
+                var auth = new FirebaseAuthProvider(new Firebase.Auth.FirebaseConfig(ApiKey));
+                var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+                // Construct FirebaseStorage with path to where you want to upload the file and put it there
+                var task = new FirebaseStorage(Bucket, new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                    ThrowOnCancel = true // when you cancel the upload, exception is thrown. By default no exception is thrown
+                })
+                //https://console.firebase.google.com/u/0/project/vncud-centraldb/storage/vncud-centraldb.appspot.com/files/teescape/Z%3A%5CShopify%5CThy%5CPhom%5CDone%20SCI-FI%205-12-2017%5C9%20done%2F
+
+                 .Child("teescape")
+                 .Child(folderPath).DeleteAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("vncud*** delete folder is faile '" + folderPath + "' has error:" + ex.Message);
+            }
+        }
+
         public static async void uploadFile(string filePath)
         {
             string folderName = Path.GetDirectoryName(filePath);

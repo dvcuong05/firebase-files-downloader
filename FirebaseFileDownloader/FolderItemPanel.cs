@@ -23,19 +23,40 @@ namespace Main
 
         public void updateTotals(int totalFiles,  int currentTotalFiles)
         {
-            this.totalFileLabel.Text = totalFiles.ToString();
-            this.currentTotalLabel.Text = currentTotalFiles.ToString();
+            try
+            {
+                this.totalFileLabel.Text = totalFiles.ToString();
+                this.currentTotalLabel.Text = currentTotalFiles.ToString();
+            }
+            catch(Exception e) {
+                Console.WriteLine("updateTotals has exception:" + e.Message);
+            }
         }
 
         public void changeProgressbarState(bool isShow)
         {
-            this.progressBar1.Visible = isShow;
+            try
+            {
+                this.progressBar1.Visible = isShow;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("changeProgressbarState has exception:"+e.Message);
+            }
         }
 
         public void updateBackground(Color color)
         {
-            this.BackColor = color;
-            this.folderNameTxt.BackColor = color;
+            
+            try
+            {
+                this.BackColor = color;
+                this.folderNameTxt.BackColor = color;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("updateBackground has exception:" + e.Message);
+            }
         }
 
     }

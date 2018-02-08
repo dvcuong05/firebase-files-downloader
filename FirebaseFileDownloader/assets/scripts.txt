@@ -9,3 +9,13 @@ for (var i = startNum; i <= endNum; i++) {
 $('button[multi-download]').click();
 return $('.uploaded-files').length;
 })(startNum,endNum)
+
+
+(function () {
+	$('button[ng-click=\"controller.deselectAllFiles()\"]').click();
+	var listFiles = [];
+	for (var i = "+this.startNum+ "; i <= " + this.endNum+ "; i++) {
+		listFiles.push($($($('.s5e-row-checkbox-cell')[i]).siblings()[0]).find('span').text().trim());
+	}
+	return listFiles;
+})()

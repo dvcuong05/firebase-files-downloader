@@ -48,6 +48,11 @@ namespace Main
             this.label11 = new System.Windows.Forms.Label();
             this.panelTop = new System.Windows.Forms.Panel();
             this.GroupLogin = new System.Windows.Forms.GroupBox();
+            this.textReplaceTxt = new System.Windows.Forms.TextBox();
+            this.totalItemPerDownload = new System.Windows.Forms.TextBox();
+            this.currentTotalFolderLabel = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.totalFolderLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.outputFolderTxt = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -58,9 +63,6 @@ namespace Main
             this.settingBtn = new System.Windows.Forms.Button();
             this.folderTxt = new System.Windows.Forms.TextBox();
             this.updateBtn = new System.Windows.Forms.Button();
-            this.currentTotalFolderLabel = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.totalFolderLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -91,7 +93,7 @@ namespace Main
             this.splitContainer.Panel2.AutoScroll = true;
             this.splitContainer.Panel2.BackColor = System.Drawing.SystemColors.Menu;
             this.splitContainer.Size = new System.Drawing.Size(1354, 733);
-            this.splitContainer.SplitterDistance = 425;
+            this.splitContainer.SplitterDistance = 404;
             this.splitContainer.TabIndex = 0;
             // 
             // listItemFlow
@@ -103,7 +105,7 @@ namespace Main
             this.listItemFlow.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listItemFlow.Location = new System.Drawing.Point(0, 131);
             this.listItemFlow.Name = "listItemFlow";
-            this.listItemFlow.Size = new System.Drawing.Size(423, 480);
+            this.listItemFlow.Size = new System.Drawing.Size(402, 480);
             this.listItemFlow.TabIndex = 0;
             // 
             // panel3
@@ -126,7 +128,7 @@ namespace Main
             this.panel3.Location = new System.Drawing.Point(0, 611);
             this.panel3.Margin = new System.Windows.Forms.Padding(0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(423, 120);
+            this.panel3.Size = new System.Drawing.Size(402, 120);
             this.panel3.TabIndex = 15;
             // 
             // copyLogBtn
@@ -271,13 +273,15 @@ namespace Main
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(423, 131);
+            this.panelTop.Size = new System.Drawing.Size(402, 131);
             this.panelTop.TabIndex = 13;
             // 
             // GroupLogin
             // 
             this.GroupLogin.BackColor = System.Drawing.Color.Transparent;
             this.GroupLogin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.GroupLogin.Controls.Add(this.textReplaceTxt);
+            this.GroupLogin.Controls.Add(this.totalItemPerDownload);
             this.GroupLogin.Controls.Add(this.currentTotalFolderLabel);
             this.GroupLogin.Controls.Add(this.label4);
             this.GroupLogin.Controls.Add(this.totalFolderLabel);
@@ -295,9 +299,58 @@ namespace Main
             this.GroupLogin.ForeColor = System.Drawing.SystemColors.ControlText;
             this.GroupLogin.Location = new System.Drawing.Point(4, -1);
             this.GroupLogin.Name = "GroupLogin";
-            this.GroupLogin.Size = new System.Drawing.Size(416, 126);
+            this.GroupLogin.Size = new System.Drawing.Size(399, 126);
             this.GroupLogin.TabIndex = 10;
             this.GroupLogin.TabStop = false;
+            // 
+            // textReplaceTxt
+            // 
+            this.textReplaceTxt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textReplaceTxt.Location = new System.Drawing.Point(86, 83);
+            this.textReplaceTxt.Name = "textReplaceTxt";
+            this.textReplaceTxt.Size = new System.Drawing.Size(75, 21);
+            this.textReplaceTxt.TabIndex = 36;
+            // 
+            // totalItemPerDownload
+            // 
+            this.totalItemPerDownload.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.totalItemPerDownload.Location = new System.Drawing.Point(357, 40);
+            this.totalItemPerDownload.Name = "totalItemPerDownload";
+            this.totalItemPerDownload.Size = new System.Drawing.Size(34, 21);
+            this.totalItemPerDownload.TabIndex = 35;
+            // 
+            // currentTotalFolderLabel
+            // 
+            this.currentTotalFolderLabel.AutoSize = true;
+            this.currentTotalFolderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.currentTotalFolderLabel.ForeColor = System.Drawing.Color.Crimson;
+            this.currentTotalFolderLabel.Location = new System.Drawing.Point(370, 74);
+            this.currentTotalFolderLabel.Name = "currentTotalFolderLabel";
+            this.currentTotalFolderLabel.Size = new System.Drawing.Size(18, 20);
+            this.currentTotalFolderLabel.TabIndex = 32;
+            this.currentTotalFolderLabel.Text = "0";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.Black;
+            this.label4.Location = new System.Drawing.Point(361, 87);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(39, 20);
+            this.label4.TabIndex = 34;
+            this.label4.Text = "------";
+            // 
+            // totalFolderLabel
+            // 
+            this.totalFolderLabel.AutoSize = true;
+            this.totalFolderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.totalFolderLabel.ForeColor = System.Drawing.Color.BlueViolet;
+            this.totalFolderLabel.Location = new System.Drawing.Point(370, 103);
+            this.totalFolderLabel.Name = "totalFolderLabel";
+            this.totalFolderLabel.Size = new System.Drawing.Size(18, 20);
+            this.totalFolderLabel.TabIndex = 33;
+            this.totalFolderLabel.Text = "0";
             // 
             // label3
             // 
@@ -314,18 +367,18 @@ namespace Main
             this.outputFolderTxt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.outputFolderTxt.Location = new System.Drawing.Point(86, 41);
             this.outputFolderTxt.Name = "outputFolderTxt";
-            this.outputFolderTxt.Size = new System.Drawing.Size(305, 21);
+            this.outputFolderTxt.Size = new System.Drawing.Size(261, 21);
             this.outputFolderTxt.TabIndex = 30;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(28, 82);
+            this.label2.Location = new System.Drawing.Point(1, 86);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 15);
+            this.label2.Size = new System.Drawing.Size(82, 15);
             this.label2.TabIndex = 29;
-            this.label2.Text = "Actions:";
+            this.label2.Text = "Replace Text:";
             // 
             // startBtn
             // 
@@ -338,9 +391,9 @@ namespace Main
             this.startBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.startBtn.Image = ((System.Drawing.Image)(resources.GetObject("startBtn.Image")));
-            this.startBtn.Location = new System.Drawing.Point(86, 69);
+            this.startBtn.Location = new System.Drawing.Point(167, 76);
             this.startBtn.Name = "startBtn";
-            this.startBtn.Size = new System.Drawing.Size(52, 42);
+            this.startBtn.Size = new System.Drawing.Size(40, 33);
             this.startBtn.TabIndex = 0;
             this.startBtn.UseVisualStyleBackColor = false;
             this.startBtn.Click += new System.EventHandler(this.startBtn_Click);
@@ -366,9 +419,9 @@ namespace Main
             this.stopBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stopBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.stopBtn.Image = ((System.Drawing.Image)(resources.GetObject("stopBtn.Image")));
-            this.stopBtn.Location = new System.Drawing.Point(263, 69);
+            this.stopBtn.Location = new System.Drawing.Point(308, 76);
             this.stopBtn.Name = "stopBtn";
-            this.stopBtn.Size = new System.Drawing.Size(52, 42);
+            this.stopBtn.Size = new System.Drawing.Size(40, 33);
             this.stopBtn.TabIndex = 3;
             this.stopBtn.UseVisualStyleBackColor = false;
             this.stopBtn.Click += new System.EventHandler(this.stopBtn_Click);
@@ -396,9 +449,9 @@ namespace Main
             this.settingBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settingBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.settingBtn.Image = ((System.Drawing.Image)(resources.GetObject("settingBtn.Image")));
-            this.settingBtn.Location = new System.Drawing.Point(204, 69);
+            this.settingBtn.Location = new System.Drawing.Point(265, 76);
             this.settingBtn.Name = "settingBtn";
-            this.settingBtn.Size = new System.Drawing.Size(52, 42);
+            this.settingBtn.Size = new System.Drawing.Size(37, 33);
             this.settingBtn.TabIndex = 2;
             this.settingBtn.UseVisualStyleBackColor = false;
             this.settingBtn.Click += new System.EventHandler(this.settingBtn_Click);
@@ -422,45 +475,12 @@ namespace Main
             this.updateBtn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.updateBtn.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.updateBtn.Image = ((System.Drawing.Image)(resources.GetObject("updateBtn.Image")));
-            this.updateBtn.Location = new System.Drawing.Point(145, 69);
+            this.updateBtn.Location = new System.Drawing.Point(215, 76);
             this.updateBtn.Name = "updateBtn";
-            this.updateBtn.Size = new System.Drawing.Size(52, 42);
+            this.updateBtn.Size = new System.Drawing.Size(41, 33);
             this.updateBtn.TabIndex = 1;
             this.updateBtn.UseVisualStyleBackColor = false;
             this.updateBtn.Click += new System.EventHandler(this.updateBtn_Click);
-            // 
-            // currentTotalFolderLabel
-            // 
-            this.currentTotalFolderLabel.AutoSize = true;
-            this.currentTotalFolderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.currentTotalFolderLabel.ForeColor = System.Drawing.Color.Crimson;
-            this.currentTotalFolderLabel.Location = new System.Drawing.Point(356, 69);
-            this.currentTotalFolderLabel.Name = "currentTotalFolderLabel";
-            this.currentTotalFolderLabel.Size = new System.Drawing.Size(18, 20);
-            this.currentTotalFolderLabel.TabIndex = 32;
-            this.currentTotalFolderLabel.Text = "0";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(347, 82);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(39, 20);
-            this.label4.TabIndex = 34;
-            this.label4.Text = "------";
-            // 
-            // totalFolderLabel
-            // 
-            this.totalFolderLabel.AutoSize = true;
-            this.totalFolderLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.totalFolderLabel.ForeColor = System.Drawing.Color.BlueViolet;
-            this.totalFolderLabel.Location = new System.Drawing.Point(356, 98);
-            this.totalFolderLabel.Name = "totalFolderLabel";
-            this.totalFolderLabel.Size = new System.Drawing.Size(18, 20);
-            this.totalFolderLabel.TabIndex = 33;
-            this.totalFolderLabel.Text = "0";
             // 
             // Main
             // 
@@ -520,6 +540,8 @@ namespace Main
         private Label currentTotalFolderLabel;
         private Label label4;
         private Label totalFolderLabel;
+        private TextBox totalItemPerDownload;
+        private TextBox textReplaceTxt;
     }
 }
 

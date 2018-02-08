@@ -32,6 +32,7 @@ namespace Main
         private ChromiumWebBrowser mainWebBrowser;
         private String step;
         private List<object> folderList = new List<object>();
+        private List<object> currentFileNames = new List<object>();
         private int currentFolderIndex = -1;
         private int totalFilesOfCurrent = 0;
 		private int startNum = -1;
@@ -68,6 +69,7 @@ namespace Main
                 //this.mainWebBrowser.AddressChanged += mainWebBrowser_AdressChangeHandler;                
                 //this.mainWebBrowser.ConsoleMessage += mainWebBrowser_ConsoleMessage;
                 this.stopBtn.Enabled = false;
+                this.totalItemPerDownload.Text = "5";
             }
             catch (Exception ex)
             {
@@ -361,16 +363,19 @@ namespace Main
 
         private void accessFolderItem()
         {
-            this.mainWebBrowser.Load(this.folderList[this.currentFolderIndex].ToString());
-            this.step = "accessFolderItem";
-            this.isDownloadFileStep = true;
-            writeLog("------Step - accessFolderItem:");
-            writeLog(this.folderList[this.currentFolderIndex].ToString());
+            this.mainWebBrowser.Invoke((MethodInvoker)delegate
+            {
+                this.mainWebBrowser.Load(this.folderList[this.currentFolderIndex].ToString());
+                this.step = "accessFolderItem";
+                this.isDownloadFileStep = true;
+                writeLog("------Step - accessFolderItem:");
+                writeLog(this.folderList[this.currentFolderIndex].ToString());
 
-            this.currentFolderPanel = (FolderItemPanel)this.listItemFlow.Controls[this.currentFolderIndex];
-            this.currentFolderPanel.updateBackground(Color.White);
-            this.currentFolderPanel.changeProgressbarState(true);
-            this.listItemFlow.ScrollControlIntoView(this.currentFolderPanel);
+                this.currentFolderPanel = (FolderItemPanel)this.listItemFlow.Controls[this.currentFolderIndex];
+                this.currentFolderPanel.updateBackground(Color.White);
+                this.currentFolderPanel.changeProgressbarState(true);
+                this.listItemFlow.ScrollControlIntoView(this.currentFolderPanel);
+            });            
         }
 
 
@@ -420,10 +425,11 @@ namespace Main
                                     }
                                     this.step = "downloadingFileForFolder";
                                     this.totalFilesOfCurrent = responseNum;
-                                    if (this.totalFilesOfCurrent > 5)
+                                    int totalPerDownloadTime = int.Parse(this.totalItemPerDownload.Text);
+                                    if (this.totalFilesOfCurrent > totalPerDownloadTime)
                                     {
                                         this.startNum = 0;
-                                        this.endNum = 4;
+                                        this.endNum = totalPerDownloadTime - 1;
                                     }
                                     else
                                     {
@@ -431,8 +437,11 @@ namespace Main
                                         this.endNum = this.totalFilesOfCurrent - 1;
                                     }
                                     TeescapeInstance.TotalDownloadingFile = ((this.endNum + 1) - this.startNum);
-                                    this.currentTotalFolderLabel.Text = (this.currentFolderIndex + 1).ToString();                                    
-                                    this.currentFolderPanel.updateTotals(responseNum, 0);
+                                    this.currentTotalFolderLabel.Text = (this.currentFolderIndex + 1).ToString();
+                                    this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                                    {
+                                        this.currentFolderPanel.updateTotals(responseNum, 0);
+                                    });
                                     downloadFileForFolder();
                                 });
                             }                            
@@ -450,6 +459,24 @@ namespace Main
             }
         }
 
+        private bool isFilesNotDownloaded()
+        {
+            if(this.currentFileNames.Count() == 0)
+            {
+                return false;
+            }
+            int total = 0;
+            for(int i = 0;i< this.currentFileNames.Count(); i++)
+            {
+                string filePath = TeescapeInstance.CurrentFolderPath + "\\" + this.currentFileNames[i].ToString();
+                if (File.Exists(filePath))
+                {
+                    total = total + 1;
+                }
+            }
+            return total != this.currentFileNames.Count();
+        }
+
         private async void downloadFileForFolder()
         {
             if (this.step != "downloadingFileForFolder")
@@ -461,7 +488,8 @@ namespace Main
             {
                 //Start to download with current folderPath from Instance
                 //var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){var rendered=$('.fb-table-elem').length;if(rendered!=0){setTimeout(function(){if(!$('md-checkbox[aria-label=\"Select all items\"]').hasClass('md-checked')){$('md-checkbox[aria-label=\"Select all items\"]').click();}$('button[multi-download]').click();},1000);return $('.uploaded-files').length;}return 404;})()");
-                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){$('button[ng-click=\"controller.deselectAllFiles()\"]').click();for(var i="+this.startNum+ ";i<=" + this.endNum+ ";i++){try{$('md-checkbox[ng-click=\"controller.selectFile($event)\"]')[i].click();}catch(e){console.error('Cannot click on undefined:'+e);}}$('button[multi-download]').click();return $('.uploaded-files').length;})()");
+                //var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){$('button[ng-click=\"controller.deselectAllFiles()\"]').click();for(var i="+this.startNum+ ";i<=" + this.endNum+ ";i++){try{$('md-checkbox[ng-click=\"controller.selectFile($event)\"]')[i].click();}catch(e){console.error('Cannot click on undefined:'+e);}}$('button[multi-download]').click();return $('.uploaded-files').length;})()");
+                var domTask = this.mainWebBrowser.EvaluateScriptAsync("(function(){$('button[ng-click=\"controller.deselectAllFiles()\"]').click();var listFiles=[];for(var i=" + this.startNum + ";i<=" + this.endNum + ";i++){try{$('md-checkbox[ng-click=\"controller.selectFile($event)\"]')[i].click();}catch(e){console.error('Cannot click on undefined:'+e);} listFiles.push($($($('.s5e-row-checkbox-cell')[i]).siblings()[0]).find('span').clone().children().remove().end().text().trim());}return listFiles;})()");
                 await domTask.ContinueWith(t =>
                 {
                     if (!t.IsFaulted)
@@ -469,7 +497,8 @@ namespace Main
                         var response = t.Result;
                         if (response.Success && response.Result != null)
                         {
-                            int responseNum = Convert.ToInt32(response.Result.ToString());                           
+                            this.currentFileNames = (List<object>)response.Result;
+                            //int responseNum = Convert.ToInt32(response.Result.ToString());                           
 							this.mainWebBrowser.Invoke((MethodInvoker)delegate
 							{
 							if (this.step == "checkTotalDownloadedFiles")
@@ -477,8 +506,40 @@ namespace Main
 								return;
 							}
 							this.step = "checkTotalDownloadedFiles";
-							checkTotalDownloadedFiles();
-							});                            
+                            if (isFilesNotDownloaded())
+                            {
+                                this.step = "downloadFileForFolder2";
+                                downloadFileForFolder2();
+                            }else
+                            {
+                                int totalPerDownloadTime = int.Parse(this.totalItemPerDownload.Text);
+                                this.startNum = this.endNum + 1;
+                                this.endNum = (this.totalFilesOfCurrent - this.startNum) > totalPerDownloadTime ? this.startNum + totalPerDownloadTime - 1 : this.totalFilesOfCurrent - 1;
+                                
+                                 //If goto the end of list => download next folder
+                                if(this.startNum >= this.totalFilesOfCurrent)
+                                {
+                                    this.mainWebBrowser.Invoke((MethodInvoker)delegate {
+                                        this.currentFolderPanel.changeProgressbarState(false);
+                                        this.currentFolderPanel.updateBackground(Color.Silver);
+                                    });
+                                    
+                                    //Download next folder
+                                    this.currentFolderIndex = this.currentFolderIndex + 1;
+                                    if (this.currentFolderIndex >= this.folderList.Count)
+                                    {
+                                        writeLog("****All done");
+                                        return;
+                                    }
+                                    this.accessFolderItem();
+                                }else //go next 5 items...
+                                {
+                                    this.step = "downloadingFileForFolder";
+                                    TeescapeInstance.TotalDownloadingFile = ((this.endNum + 1) - this.startNum);
+                                    downloadFileForFolder();
+                                 }
+                             }
+                            });                            
                         }
                         else
                         {
@@ -490,6 +551,39 @@ namespace Main
             catch (Exception ex)
             {
                 writeLog("downloadFileForFolder has error:" + ex.Message);
+            }
+        }
+
+        private async void downloadFileForFolder2()
+        {
+            if (this.step != "downloadFileForFolder2")
+            {
+                return;
+            }
+
+            try
+            {
+                var domTaskDownload = this.mainWebBrowser.EvaluateScriptAsync("(function(){$('button[multi-download]').click();})()");
+                await domTaskDownload.ContinueWith(t =>
+                {
+                    if (!t.IsFaulted)
+                    {
+                        var response = t.Result;
+                        if (response.Success)
+                        {
+                            this.step = "checkTotalDownloadedFiles";
+                            checkTotalDownloadedFiles();
+                        }
+                        else
+                        {
+                            writeLog("downloadFileForFolder2() has error:"+response.Message);
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                writeLog("downloadFileForFolder2() has error:" + ex.Message);
             }
         }
 
@@ -509,15 +603,23 @@ namespace Main
             string[] fileEntries = Directory.GetFiles(TeescapeInstance.CurrentFolderPath);
             if(fileEntries.Length != this.totalFilesOfCurrent && TeescapeInstance.TotalDownloadingFile >0)
             {
-                this.currentFolderPanel.updateTotals(this.totalFilesOfCurrent, fileEntries.Length);
+                this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                {
+                    this.currentFolderPanel.updateTotals(this.totalFilesOfCurrent, fileEntries.Length);
+                });
+                GC.Collect();
                 System.Threading.Thread.Sleep(5000);
                 checkTotalDownloadedFiles();
             }
             else if(fileEntries.Length >= this.totalFilesOfCurrent)
             {
-                this.currentFolderPanel.updateTotals(this.totalFilesOfCurrent, fileEntries.Length);
-                this.currentFolderPanel.changeProgressbarState(false);
-                this.currentFolderPanel.updateBackground(Color.Silver);
+                this.mainWebBrowser.Invoke((MethodInvoker)delegate
+                {
+                    this.currentFolderPanel.updateTotals(this.totalFilesOfCurrent, fileEntries.Length);
+                    this.currentFolderPanel.changeProgressbarState(false);
+                    this.currentFolderPanel.updateBackground(Color.Silver);
+                });
+
                 //Download next folder
                 this.currentFolderIndex = this.currentFolderIndex + 1;
                 if (this.currentFolderIndex >= this.folderList.Count)
@@ -528,8 +630,9 @@ namespace Main
                 this.accessFolderItem();
             }else if(fileEntries.Length != this.totalFilesOfCurrent && TeescapeInstance.TotalDownloadingFile <= 0)
             {
+                int totalPerDownloadTime = int.Parse(this.totalItemPerDownload.Text);
                 this.startNum = this.endNum + 1;
-                this.endNum = (this.totalFilesOfCurrent - this.startNum) > 5 ? this.startNum + 4 : this.totalFilesOfCurrent-1;
+                this.endNum = (this.totalFilesOfCurrent - this.startNum) > totalPerDownloadTime ? this.startNum + totalPerDownloadTime -1 : this.totalFilesOfCurrent-1;
                 this.step = "downloadingFileForFolder";
                 TeescapeInstance.TotalDownloadingFile = ((this.endNum + 1) - this.startNum);
                 downloadFileForFolder();
@@ -538,6 +641,7 @@ namespace Main
 
         private void updateBtn_Click(object sender, EventArgs e)
         {
+            string currentFolder = "";
             try
             {
                 string[] folderEntries = Directory.GetDirectories(this.outputFolderTxt.Text);
@@ -545,25 +649,44 @@ namespace Main
                 {
                     foreach (string folderPath in folderEntries)
                     {
+                        currentFolder = folderPath;
                         string setupFilePath = folderPath + "\\setup.txt";
-                        if(File.Exists(setupFilePath)){
-                            string fileSetupContent = File.ReadAllText(setupFilePath);
-                            string startStr = "\"FolderPath\":\"";
-                            string endStr = "\",\"Description\"";
-                            int startIndex = fileSetupContent.IndexOf(startStr);
-                            int endIndex = fileSetupContent.IndexOf(endStr);
-                            string foundPath = fileSetupContent.Substring(startIndex + startStr.Length, endIndex - endStr.Length);
-                            string newFileContent = fileSetupContent.Replace("\"IsFinished\":true", "\"IsFinished\":false");
-                            newFileContent = newFileContent.Replace(foundPath, folderPath.Replace("\\", "\\\\"));
-                            File.WriteAllText(setupFilePath, newFileContent);
+                        string[] listFiles = Directory.GetFiles(folderPath);
+                        if (listFiles.Count() <=3)
+                        {
+                            Directory.Delete(folderPath,true);
+                        }else
+                        {
+                            bool hasSetupFile = false;
+                            if (File.Exists(setupFilePath))
+                            {
+                                hasSetupFile = true;
+                                string fileSetupContent = File.ReadAllText(setupFilePath);
+                                string startStr = "\"FolderPath\":\"";
+                                string endStr = ",\"Description\":";
+                                int startIndex = fileSetupContent.IndexOf(startStr);
+                                int endIndex = fileSetupContent.IndexOf(endStr);
+                                string foundPath = fileSetupContent.Substring(startIndex + startStr.Length, endIndex - endStr.Length);
+                                string newFileContent = fileSetupContent.Replace("\"IsFinished\":true", "\"IsFinished\":false");
+                                newFileContent = newFileContent.Replace(foundPath, folderPath.Replace("\\", "\\\\"));
+                                newFileContent = newFileContent.Replace("\"Description\":\"", "\"Description\":\""+this.textReplaceTxt.Text);
+                                File.WriteAllText(setupFilePath, newFileContent);
+                            }
+                            if(!hasSetupFile)
+                            {
+                                string[] files = System.IO.Directory.GetFiles(folderPath, "*.txt");
+                                if(files.Length >0)
+                                System.IO.File.Move(files[0], setupFilePath);
+                            }
                         }
+                        
                     }
                  }
                 MessageBox.Show("Update folder path for all setup files is done", "Infor");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Update folder path for all setup files has error:"+ex.Message, "Warning");
+                MessageBox.Show("Update folder "+ currentFolder + " path for all setup files has error:"+ex.Message, "Warning");
             }
         }
 
