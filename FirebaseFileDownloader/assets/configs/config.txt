@@ -1,0 +1,1 @@
+{"ApiKey":"AIzaSyAR1RquRt9K-xMTaCUvRUoaj1asVtU5ivc","Bucket":"vncud-centraldb.appspot.com","AuthEmail":"teescapeuser@gmail.com","AuthPassword":"8112hj47124","FirebaseFolder":"https://console.firebase.google.com/u/0/project/vncud-centraldb/storage/vncud-centraldb.appspot.com/files/teescape/","OutputFolder":"E:\\TeescapeData\\TeescapeFB"}
